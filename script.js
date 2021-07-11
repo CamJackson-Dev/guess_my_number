@@ -1,9 +1,8 @@
 'use strict';
 
-var message = document.querySelector('.message');
 var number = document.querySelector('.number');
 const scoreBoard = document.querySelector('.score');
-
+const message = document.querySelector('.message');
 // console.log(message.textContent);
 
 // console.log(message.textContent);
@@ -13,20 +12,24 @@ const scoreBoard = document.querySelector('.score');
 // console.log(guess.value);
 
 // Secret number
-const secretNumber = Math.trunc(Math.random() * 20) + 1;
+let secretNumber = Math.trunc(Math.random() * 20) + 1;
 
 var check = document.querySelector('.check');
 let score = 20;
 let highscore = 0;
+
+const displayMessage = function (message) {
+  document.querySelector('.message').textContent = message;
+};
 
 check.addEventListener('click', function () {
   const guess = Number(document.querySelector('.guess').value);
   const myHighScore = document.querySelector('.highscore');
 
   if (!guess) {
-    message.textContent = '🛑 No Number!';
+    displayMessage('🛑 No Number!');
   } else if (guess === secretNumber) {
-    message.textContent = '😍 Correct Number!';
+    displayMessage('😍 Correct Number!');
     number.textContent = secretNumber;
 
     // change background to green, increase width & number color on WIN
@@ -37,22 +40,15 @@ check.addEventListener('click', function () {
       highscore = score;
       myHighScore.textContent = highscore;
     }
-  } else if (guess > secretNumber) {
+
+    // When guess is wrong
+  } else if (guess !== secretNumber) {
     if (score > 1) {
-      message.textContent = '📈 Too high!';
+      displayMessage(guess > secretNumber ? '📈 Too high!' : '📉 Too low!');
       score--;
       scoreBoard.textContent = score;
     } else {
-      message.textContent = '🧨 You lost the game!';
-      scoreBoard.textContent = 0;
-    }
-  } else if (guess < secretNumber) {
-    if (score > 1) {
-      message.textContent = '📉 Too low!';
-      score--;
-      scoreBoard.textContent = score;
-    } else {
-      message.textContent = '🧨 You lost the game!';
+      displayMessage('🧨 You lost the game!');
       scoreBoard.textContent = 0;
     }
   }
@@ -69,7 +65,7 @@ again.addEventListener('click', resetGame);
 function resetGame() {
   const guess = document.querySelector('.guess');
   // Rest initial value of message, number & score vars.
-  message.textContent = 'Start guessing...';
+  displayMessage('Start guessing...');
   number.textContent = '?';
   score = 20;
   guess.value = '';
